@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<component name="com.nuxeo.labs.versionning.operation.import-version" version="1.0">
+
+  <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+    <operation class="com.nuxeo.labs.versionning.ImportVersion"/>
+  </extension>
+
+</component>

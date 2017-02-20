@@ -1,0 +1,9 @@
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Manifest-Version: 1.0
+Bundle-Vendor: com.nuxeo.labs.versionning
+Bundle-Version: 1.0.0
+Bundle-Name: nuxeo-labs-versioning-tools-core
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.nuxeo.labs.versionning.nuxeo-labs-versioning-tools-core;singleton=true
+Nuxeo-Component: OSGI-INF/import-version-operation-contrib.xml
