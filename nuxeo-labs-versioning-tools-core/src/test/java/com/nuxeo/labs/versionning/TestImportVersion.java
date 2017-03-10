@@ -82,15 +82,15 @@ public class TestImportVersion {
     }
     
     @Test
-    public void testAllowVersionWrite() {
+    public void testVersionNumberWrite() {
         DocumentModel doc = session.createDocumentModel("/", "doc", "File");
-        doc.setPropertyValue("icon", "icon1");
         doc = session.createDocument(doc);
         DocumentRef verRef = session.checkIn(doc.getRef(), null, null);
 
         // regular version cannot be written
         DocumentModel ver = session.getDocument(verRef);
-        ver.setPropertyValue("icon", "icon2");
+        ver.setPropertyValue("uid:major_version", "2");
+        ver.setPropertyValue("uid:minor_version", "1");
         try {
             session.saveDocument(ver);
             fail("Should not allow version write");
@@ -99,12 +99,16 @@ public class TestImportVersion {
         }
 
         // with proper option, it's allowed
-        ver.setPropertyValue("icon", "icon3");
+        
+        ver.setPropertyValue("uid:major_version", "3");
+        ver.setPropertyValue("uid:minor_version", "4");
         ver.putContextData(CoreSession.ALLOW_VERSION_WRITE, Boolean.TRUE);
         session.saveDocument(ver);
         // refetch to check
         ver = session.getDocument(verRef);
-        assertEquals("icon3", ver.getPropertyValue("icon"));
+        assertEquals(Long.valueOf(3), ver.getPropertyValue("uid:major_version"));
+        assertEquals(Long.valueOf(4), ver.getPropertyValue("uid:minor_version"));
+
     }
     
    
@@ -117,6 +121,9 @@ public class TestImportVersion {
         
         // Create a first major version
         document.checkIn(VersioningOption.MAJOR, "major version");
+        assertEquals(Long.valueOf(1), document.getPropertyValue("uid:major_version"));
+        assertEquals(Long.valueOf(0), document.getPropertyValue("uid:minor_version"));
+
         
         // Generate a new unique UUUID for the minor version to import;
         String vid = UUID.randomUUID().toString(); 
@@ -150,6 +157,8 @@ public class TestImportVersion {
         assertEquals("version from copy", copy.getProperty("dublincore", "title"));
         //Check that we have the copied the information from the source.
         assertEquals("Source1", copy.getProperty("dublincore", "source"));
+        assertEquals(Long.valueOf(0), copy.getPropertyValue("uid:major_version"));
+        assertEquals(Long.valueOf(2), copy.getPropertyValue("uid:minor_version"));
         assertEquals(documentLiveId,copy.getVersionSeriesId());
         DocumentModelListImpl documents = new DocumentModelListImpl(session.getVersions(document.getRef()));
         assertEquals(2,documents.size());
