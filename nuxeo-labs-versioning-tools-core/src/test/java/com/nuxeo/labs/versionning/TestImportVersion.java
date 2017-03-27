@@ -99,7 +99,6 @@ public class TestImportVersion {
         }
 
         // with proper option, it's allowed
-        
         ver.setPropertyValue("uid:major_version", "3");
         ver.setPropertyValue("uid:minor_version", "4");
         ver.putContextData(CoreSession.ALLOW_VERSION_WRITE, Boolean.TRUE);
@@ -137,6 +136,11 @@ public class TestImportVersion {
         DocumentModel copy = new DocumentModelImpl((String) null, type, vid, path, null, null, null,
                 null, null, null, null);
         copy.copyContent(document);
+        /* We will use importDocuments methods that allows more import flexibility
+         * context data can be set before importing
+         * Beware that importDocuments must run as an administrator
+         */
+        //Context Data are needed by the importDocuments method.
         copy.putContextData(CoreSession.IMPORT_VERSION_VERSIONABLE_ID, documentLiveId);
         copy.putContextData(CoreSession.IMPORT_VERSION_CREATED, vcr);
         copy.putContextData(CoreSession.IMPORT_VERSION_LABEL, "V02");
@@ -146,6 +150,8 @@ public class TestImportVersion {
         copy.putContextData(CoreSession.IMPORT_VERSION_IS_LATEST_MAJOR, Boolean.FALSE);
         copy.putContextData(CoreSession.IMPORT_VERSION_MAJOR, Long.valueOf(0));
         copy.putContextData(CoreSession.IMPORT_VERSION_MINOR, Long.valueOf(2));
+        copy.setPropertyValue("uid:major_version", Long.valueOf(0));
+        copy.setPropertyValue("uid:minor_version", Long.valueOf(2));
         copy.setProperty("dublincore", "title", "version from copy");
         
         session.importDocuments(Collections.singletonList(copy));
